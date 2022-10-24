@@ -1,5 +1,5 @@
 name: contentful automic backup
-on: push
+on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,3 +13,5 @@ jobs:
         run: npm install -g contentful-cli
       - name: export data
         run: contentful space export --config contentful/export-config.json --export-name export-data'data +%Y-%m-%d'
+      - name: push to github repo
+        run: git --version
