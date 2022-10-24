@@ -2,7 +2,7 @@
   "spaceId": "gfvt2uug1xtt",
   "environmentId": "master",
   "managementToken": "CFPAT--yxbY2pFz6zU_-XFlO_5z2n4jJpp_khOIqfpNUTAKCE",
-  "exportDir": "./",
+  "exportDir": "./contentful/",
   "saveFile": true,
   "contentFile": "export.json",
   "includeDrafts": false,
@@ -16,6 +16,6 @@
   "host": "api.contentful.com",
   "rawProxy": false,
   "maxAllowedLimit": 1000,
-  "errorLogFile": "./error.log",
+  "errorLogFile": "./contentful/error.log",
   "useVerboseRenderer": false
 }
