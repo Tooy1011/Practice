@@ -12,7 +12,7 @@ jobs:
       - name: install contentful cli
         run: npm install -g contentful-cli
       - name: export data
-        run: contentful space export --config contentful/export-config.json --export-name export-data'data +%Y-%m-%d'
+        run: contentful space export --config contentful/export-config.json --content-file export-data'data +%Y-%m-%d'
       - name: new ls
         run: |
           cd contentful
