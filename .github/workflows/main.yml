@@ -23,7 +23,7 @@ jobs:
           git commit -m "push the contenful backup file" -a
 
       - name: Push changes
-        run: git push origin master 
+        run: git push origin main 
 #         uses: ad-m/github-push-action@master
 #         with:
 #           github_token: ${{ secrets.GITHUB_TOKEN }}
