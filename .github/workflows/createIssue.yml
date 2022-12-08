@@ -1,36 +1,29 @@
-name: issue automic create
-
+name: build
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'offersku.json'
-      
-  workflow_dispatch:
-
+  workflow_dispatch
+#   push:
+#     branches: [ main ]
+#     paths: 
+#       - 'offersku.json'
 jobs:
-  getlist:
+  createIssue:
+    env:
+      GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      name: check out code
-    - id: set-list
-      run: echo "LIST=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)" >> GITHUB_OUTPUT
-  
-  create-issue:
-    needs: getlist
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{fromJson(needs.getlist.outputs.LIST)}}
-
-    steps:
-      - uses: actions/checkout@v2
-        name: check out code
-      
-      - name: create new issues
-        uses: peter-evans/create-issue-from-fle@v3
-        with:
-          title: ${{ matrix.appname }} ${{ matrix.version }} on ${{ matrix.os }} on ${{ matrix.platform }}
-          content-filepath: ./list/issue.md
-          token: ${{secrets.GITHUB_TOKEN}}
-  
+      name: Check out code
+    - name: handle-list
+      run: |
+        milestone=$(cat offersku.json | jq '.mailstone')
+        list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
+        length=$(echo $list | jq '.|length')
+        for ((index=0;index<$length;index++));do
+          appname=$(echo $list | jq ".[$index].appname")
+          version=$(echo $list | jq ".[$index].version")
+          distribution=$(echo $list | jq ".[$index].distribution")
+          platform=$(echo $list | jq ".[$index].platform")
+          os=$(echo $list | jq ".[$index].os")
+          assignees=$(echo $list | jq ".[$index].assignees")
+          gh issue create --project TODO --assignee assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/create_offersku.md --milestone $milestone
+        done
