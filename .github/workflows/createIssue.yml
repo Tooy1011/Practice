@@ -1,0 +1,34 @@
+name: issue automic create
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'offersku.json'
+
+jobs:
+  getlist:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      name: check out code
+    - id: set-list
+      run: echo "LIST=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)" >> GITHUB_OUTPUT
+  
+  create-issue:
+    needs: getlist
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.getlist.outputs.LIST)}}
+
+    steps:
+      - uses: actions/checkout@v2
+        name: check out code
+      
+      - name: create new issues
+        uses: peter-evans/create-issue-from-fle@v3
+        with:
+          title: ${{ matrix.appname }} ${{ matrix.version }} on ${{ matrix.os }} on ${{ matrix.platform }}
+          content-filepath: ./list/issue.md
+          token: ${{secrets.GITHUB_TOKEN}}
+  
