@@ -53,5 +53,5 @@ jobs:
           platform=$(echo $list | jq -r ".[$index].platform")
           os=$(echo $list | jq -r ".[$index].os")
           assignees=$(echo $list | jq -r ".[$index].assignees")
-          gh issue create --assignee $assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $milestone
+          gh issue create --project 1 --assignee $assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $milestone
         done
