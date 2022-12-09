@@ -1,4 +1,4 @@
-name: build
+name: issue automic create
 on:
 #   push:
 #     branches: [ main ]
