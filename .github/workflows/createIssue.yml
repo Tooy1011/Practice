@@ -74,10 +74,13 @@ jobs:
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
             --data '{"query":"query{ node(id: \"'$project_id'\") { ... on ProjectV2 { fields(first: 20) { nodes { ... on ProjectV2FieldCommon { id name } ... on ProjectV2SingleSelectField { id name options { id name }}}}}}}"}')
+          echo $node
           field_id=$(echo $node | jq -r '.data.node.fields.nodes[2].id')
+          echo $field_id
           option_id=$(echo $node | jq -r '.data.node.fields.nodes[2].options[1].id')
+          echo $option_id
           curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
-            --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'$project_id'\" itemId: \"'$issue_id'\" fieldId: \"'$filed_id'\" value: { singleSelectOptionId: \"'option_id'\" }}) { projectV2Item { id }}}"}'
+            --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'$project_id'\" itemId: \"'$issue_id'\" fieldId: \"'$field_id'\" value: { singleSelectOptionId: \"'option_id'\" }}) { projectV2Item { id }}}"}'
         done
