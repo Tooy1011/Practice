@@ -53,7 +53,7 @@ jobs:
           os=$(echo $list | jq -r ".[$index].os")
           assignee=$(echo $list | jq -r ".[$index].assignees")
           stone=$(echo $milestone | sed 's/\"//g')
-          issue_number=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $stone | awk -F "/" '{print $NF}')
+          
           issue_id=$(curl \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{github.token}}"\
