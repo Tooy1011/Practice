@@ -65,11 +65,7 @@ jobs:
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
             --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 1){id}}}"}' | jq -r .data.user.projectV2.id)
           echo $project_id
-          curl --request POST \
-            --url https://api.github.com/graphql \
-            --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
-            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}'
-          
+            
           node=$(curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
