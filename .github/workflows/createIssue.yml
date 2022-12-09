@@ -53,5 +53,15 @@ jobs:
           os=$(echo $list | jq -r ".[$index].os")
           assignee=$(echo $list | jq -r ".[$index].assignees")
           stone=$(echo $milestone | sed 's/\"//g')
-          gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $stone
+          url=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $stone)
+          issue_id=$(echo "$url" | awk -F "/" '{print $NF}')
+          project_id=1
+          gh api -f project="$project_id" -f item="$issue_id" -f query='
+            mutation AddToProject($project: ID!, $item: ID!) {
+              addProjectNextItem(input: { projectId: $project, contentId: $item }) {
+                projectNextItem {
+                  id
+                }
+              }
+            }'
         done
