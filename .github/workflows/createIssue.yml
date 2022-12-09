@@ -70,10 +70,12 @@ jobs:
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
             --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}' | jq -r '.data.addProjectV2ItemById.item.id')
           echo $item_id
-          echo curl --request POST \
+          
+          echo $(curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer TOKEN' \
-            --data '{"query":"query{ node(id: \"'$project_id'\") { ... on ProjectV2 { items(first: 20) { nodes{ id fieldValues(first: 8) { nodes{ ... on ProjectV2ItemFieldTextValue { text field { ... on ProjectV2FieldCommon {  name }}} ... on ProjectV2ItemFieldDateValue { date field { ... on ProjectV2FieldCommon { name } } } ... on ProjectV2ItemFieldSingleSelectValue { name field { ... on ProjectV2FieldCommon { name }}}}} content{ ... on DraftIssue { title body } ...on Issue { title assignees(first: 10) { nodes{ login }}} ...on PullRequest { title assignees(first: 10) { nodes{ login }}}}}}}}}"}'
+            --data '{"query":"query{ node(id: \"'$project_id'\") { ... on ProjectV2 { items(first: 20) { nodes{ id fieldValues(first: 8) { nodes{ ... on ProjectV2ItemFieldTextValue { text field { ... on ProjectV2FieldCommon {  name }}} ... on ProjectV2ItemFieldDateValue { date field { ... on ProjectV2FieldCommon { name } } } ... on ProjectV2ItemFieldSingleSelectValue { name field { ... on ProjectV2FieldCommon { name }}}}} content{ ... on DraftIssue { title body } ...on Issue { title assignees(first: 10) { nodes{ login }}} ...on PullRequest { title assignees(first: 10) { nodes{ login }}}}}}}}}"}')
+          
           node=$(curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
