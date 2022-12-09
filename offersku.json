@@ -7,15 +7,7 @@
       "distribution": ["CE"],
       "platform": ["AWS"],
       "os": ["AmazonLinux"],
-      "assignees": "童颖佳"	   
-     },
-     {
-      "appname": "Oracle",
-      "version": ["21c","19c"],
-      "distribution": ["express","enterprise"],
-      "platform": ["阿里云","华为云"],
-      "os": ["Ubuntu"],
-      "assignees": "童颖佳"	   
-      }	 
+      "assignees": "Tooy1011"	   
+     }
    ]
 }
