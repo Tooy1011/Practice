@@ -53,7 +53,7 @@ jobs:
           os=$(echo $list | jq -r ".[$index].os")
           assignee=$(echo $list | jq -r ".[$index].assignees")
           stone=$(echo $milestone | sed 's/\"//g')
-          url=$(echo "gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $stone")
+          url=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $stone)
           echo $url
           issue_id=$(echo $url | awk -F "/" '{print $NF}')
           project_id=1
