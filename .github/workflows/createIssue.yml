@@ -73,6 +73,7 @@ jobs:
           node=$(curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
-            --data '{"query":"query{ node(id: \"'$project_id'\") { ... on ProjectV2 { fields(first: 20) { nodes { ... on ProjectV2SingleSelectField { id name options { id name }}}}}}}"}')
+            --data '{"query":"query{ node(id: \"'$project_id'\") { ... on ProjectV2 { fields(first: 20) { nodes { ... on ProjectV2SingleSelectField { id name options { id name }}}}}}}"}' | jq -r .data.node.fileds.nodes[2])
+            
           echo $node
         done
