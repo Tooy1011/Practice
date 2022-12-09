@@ -53,7 +53,7 @@ jobs:
           os=$(echo $list | jq -r ".[$index].os")
           assignee=$(echo $list | jq -r ".[$index].assignees")
           stone=$(echo $milestone | sed 's/\"//g')
-          
+          issue_number=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $stone | awk -F "/" '{print $NF}')
           issue_id=$(curl \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{github.token}}"\
@@ -65,11 +65,19 @@ jobs:
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
             --data '{"query":"query{user(login: \"${{github.repository_owner}}\") {projectV2(number: 1){id}}}"}' | jq -r .data.user.projectV2.id)
           echo $project_id
-            
+          curl --request POST \
+            --url https://api.github.com/graphql \
+            --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
+            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}'
+          
           node=$(curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
             --data '{"query":"query{ node(id: \"'$project_id'\") { ... on ProjectV2 { fields(first: 20) { nodes { ... on ProjectV2FieldCommon { id name } ... on ProjectV2SingleSelectField { id name options { id name }}}}}}}"}')
-            
-          echo $node
+          field_id=$(echo $node | jq -r '.data.node.fields.nodes[2].id')
+          option_id=$(echo $node | jq -r '.data.node.fields.nodes[2].options[1].id')
+          curl --request POST \
+            --url https://api.github.com/graphql \
+            --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
+            --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'$project_id'\" itemId: \"'$issue_id'\" fieldId: \"'$filed_id'\" value: { singleSelectOptionId: \"'option_id'\" }}) { projectV2Item { id }}}"}'
         done
