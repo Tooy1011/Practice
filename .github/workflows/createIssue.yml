@@ -1,4 +1,4 @@
-name: issue automic create
+name: build
 on:
 #   push:
 #     branches: [ main ]
@@ -16,23 +16,22 @@ jobs:
       name: Check out code
     - name: handle-list
       run: |
-        milestone=$(cat offersku.json | jq -r '.mailstone')
-        
+        milestone=$(cat offersku.json | jq '.mailstone')
         allMilestones=$(curl \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{github.token}}"\
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/${{github.repository_owner}}/manufacture/milestones | jq  -r '.[] | .title')
+          https://api.github.com/repos/${{github.repository_owner}}/manufacture/milestones | jq  '.[] | .title')
         
-        createFlag=true
+        createFlag="true"
         for item in $allMilestones;do
           if [[ $item == $milestone ]];then
-            $createFlag=false
+            createFlag="false"
+            echo "milestone exist"
             break
           fi 
         done
-        echo $createFlag
-        if [[ $createFlag == true ]];then
+        if [[ $createFlag == "true" ]];then
           echo "create new milestone"
           curl \
             -X POST \
@@ -52,6 +51,7 @@ jobs:
           distribution=$(echo $list | jq -r ".[$index].distribution")
           platform=$(echo $list | jq -r ".[$index].platform")
           os=$(echo $list | jq -r ".[$index].os")
-          assignees=$(echo $list | jq -r ".[$index].assignees")
-          gh issue create --project 1 --assignee $assignees --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $milestone
+          assignee=$(echo $list | jq -r ".[$index].assignees")
+          stone=$(echo $milestone | sed 's/\"//g')
+          gh issue create --project 1 --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $stone
         done
