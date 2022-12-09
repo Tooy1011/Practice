@@ -56,6 +56,7 @@ jobs:
           url=$(gh issue create --assignee $assignee --title "$appname$version $distribution on $os on $platform" --body-file .github/ISSUE_TEMPLATE/offersku.md --milestone $stone)
           echo $url
           issue_id=$(echo $url | awk -F "/" '{print $NF}')
+          echo $issue_id
           project_id=1
           gh api -f project="$project_id" -f item="$issue_id" -f query='
             mutation AddToProject($project: ID!, $item: ID!) {
