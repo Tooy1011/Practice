@@ -58,10 +58,10 @@ jobs:
           issue_id=$(echo $url | awk -F "/" '{print $NF}')
           echo $issue_id
           project_id=1
-          gh api -f project="$project_id" -f item="$issue_id" -f query='
-            mutation AddToProject($project: ID!, $item: ID!) {
-              addProjectNextItem(input: { projectId: $project, contentId: $item }) {
-                projectNextItem {
+          gh api graphql -f query='
+            mutation {
+              addProjectV2ItemById(input: {projectId: '$project_id' contentId: '$issue_id'}) {
+                item {
                   id
                 }
               }
