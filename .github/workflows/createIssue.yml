@@ -74,5 +74,5 @@ jobs:
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
             --data '{"query":"query{ node(id: \"PROJECT_ID\") { ... on ProjectV2 { fields(first: 20) { nodes { ... on ProjectV2SingleSelectField { id name options { id name }}}}}}}"}')
-          echo $status_id
+          echo $node
         done
