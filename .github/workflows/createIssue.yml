@@ -68,7 +68,7 @@ jobs:
           item_id=$(curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
-            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}')
+            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"'$project_id'\" contentId: \"'$issue_id'\"}) {item {id}}}"}' | jq -r '.data.addProjectV2ItemById.item.id')
           echo $item_id
           node=$(curl --request POST \
             --url https://api.github.com/graphql \
@@ -82,5 +82,5 @@ jobs:
           curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACCESS_PROJECT }}' \
-            --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'$project_id'\" itemId: \"'$issue_id'\" fieldId: \"'$field_id'\" value: { singleSelectOptionId: \"'option_id'\" }}) { projectV2Item { id }}}"}'
+            --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'$project_id'\" itemId: \"'$item_id'\" fieldId: \"'$field_id'\" value: { singleSelectOptionId: \"'option_id'\" }}) { projectV2Item { id }}}"}'
         done
