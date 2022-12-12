@@ -45,6 +45,7 @@ jobs:
         length=$(echo $list | jq '.|length')  
         list=$(jq "[.task[] | {appname:.appname,version:.version[],distribution:.distribution[],platform:.platform[],os:.os[],assignees:.assignees}]" offersku.json)
         length=$(echo $list | jq '.|length')
+        declare -A map
         map=(["童颖佳"]="Tooy1011" ["张露"]="zl-go")
         for ((index=0;index<$length;index++));do
           appname=$(echo $list | jq -r ".[$index].appname")
