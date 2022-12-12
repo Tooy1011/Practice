@@ -1,9 +1,11 @@
 name: change issue status
 on:
-  push:
-    branches: [ main ]
-    paths: 
-      - 'offersku.json'
+#   push:
+#     branches: [ main ]
+#     paths: 
+#       - 'offersku.json'
+  workflow_dispatch:
+  
 jobs:
   createIssue:
     env:
